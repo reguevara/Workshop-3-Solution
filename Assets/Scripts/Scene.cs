@@ -22,7 +22,6 @@ public class Scene : MonoBehaviour
         EmbedImageInWorld();
 
         // Perform ray tracing to render the image.
-        // This is meant to mimic the Render() method in project 1!
         Render();
         
         // Add additional visualisations to help debug things.
