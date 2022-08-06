@@ -50,7 +50,6 @@ public class Scene : MonoBehaviour
             RaycastHit? nearestHit = null;
             foreach (var sceneEntity in FindObjectsOfType<SceneEntity>())
             {
-                Debug.Log(sceneEntity.name);
                 var hit = sceneEntity.Intersect(ray);
                 if (hit != null && (hit?.distance < nearestHit?.distance || nearestHit == null))
                 {
