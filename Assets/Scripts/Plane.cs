@@ -3,26 +3,24 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(MeshCollider))]
 public class Plane : SceneEntity
 {
+    [SerializeField] private Vector3 center;
+    [SerializeField] private Vector3 normal;
+    
     public override RaycastHit? Intersect(Ray ray)
     {
-        // Using a custom written intersection function (e.g. from your project):
-        //return TestMyIntersect(ray);
+        // Use a custom written intersection function.
+        // Uncomment below once this is done (e.g. from your project):
+        return MyIntersect(ray);
 
-        // Using Unity engine for ray-plane(/mesh) collisions instead:
-        var plane = GetComponent<MeshCollider>();
-        var isHit = plane.Raycast(ray, out var hit, float.PositiveInfinity);
-        return isHit ? hit : null;
+        // Use Unity engine for collisions.
+        //return UnityIntersect(ray);
     }
 
-    private RaycastHit? TestMyIntersect(Ray ray)
+    private RaycastHit? MyIntersect(Ray ray)
     {
         // Check whether ray intersects with plane
-        var normal = new Vector3(0, 1, 0); // Note this is hardcoded!
-        var center = transform.position;
-
         var denom = Vector3.Dot(ray.direction, normal);
         if (Mathf.Abs(denom) > float.Epsilon)
         {
@@ -39,4 +37,7 @@ public class Plane : SceneEntity
 
         return null;
     }
+    
+    public Vector3 Center => this.center;
+    public Vector3 Normal => this.normal;
 }

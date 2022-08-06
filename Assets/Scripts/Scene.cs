@@ -1,40 +1,46 @@
 // COMP30019 - Graphics and Interaction
 // (c) University of Melbourne, 2022
 
-using System;
 using UnityEngine;
 
 public class Scene : MonoBehaviour
 {
     [SerializeField] private Image image;
-    [SerializeField] private FOVAxisType fovAxis = FOVAxisType.Vertical;
-    [SerializeField] [Range(1, 179)] private float fov = 60f;
+    [SerializeField] [Range(1, 179)] private float fieldOfView = 60f;
+    
+    [SerializeField] private LinesGenerator debug;
 
     private float _imagePlaneHeight;
     private float _imagePlaneWidth;
-
+    
     private void Start()
     {
+        // Figure out how the image is scaled in the world (the image "plane").
         ComputeWorldImageBounds();
+        
+        // Place the image in the world accordingly, so we can visualise this.
         EmbedImageInWorld();
 
         // Perform ray tracing to render the image.
-        // This is meant to mimic the Render() method in project 1.
+        // This is meant to mimic the Render() method in project 1!
         Render();
+        
+        // Add additional visualisations to help debug things.
+        DebugVisualisations();
     }
 
-    private void Update()
+    private void DebugVisualisations()
     {
         // Here you may use Unity "debug rays" to visualise rays in the scene.
 
-        // Frustum corner rays first.
-        const float dist = 10.0f; // How 'far' the rays are drawn.
-        Debug.DrawRay(Vector3.zero, NormalizedImageToWorldCoord(0f, 0f) * dist, Color.blue);
-        Debug.DrawRay(Vector3.zero, NormalizedImageToWorldCoord(0f, 1f) * dist, Color.blue);
-        Debug.DrawRay(Vector3.zero, NormalizedImageToWorldCoord(1f, 0f) * dist, Color.blue);
-        Debug.DrawRay(Vector3.zero, NormalizedImageToWorldCoord(1f, 1f) * dist, Color.blue);
+        // Image plane "corner" rays first (frustum edges).
+        this.debug.Ray(new Ray(Vector3.zero, NormalizedImageToWorldCoord(0f, 0f)), Color.blue);
+        this.debug.Ray(new Ray(Vector3.zero, NormalizedImageToWorldCoord(0f, 1f)), Color.blue);
+        this.debug.Ray(new Ray(Vector3.zero, NormalizedImageToWorldCoord(1f, 0f)), Color.blue);
+        this.debug.Ray(new Ray(Vector3.zero, NormalizedImageToWorldCoord(1f, 1f)), Color.blue);
         
-        // Add rays here...
+        // Add more rays to visualise here...
+        this.debug.Ray(new Ray(Vector3.zero, GetPixelCenterWorldCoord(30, 18)), Color.white);
     }
 
     private void Render()
@@ -62,10 +68,10 @@ public class Scene : MonoBehaviour
 
     private Vector3 GetPixelCenterWorldCoord(int x, int y)
     {
-        var pixelX = (x + 0.5f) / this.image.Width;
-        var pixelY = (y + 0.5f) / this.image.Height;
+        var normX = (x + 0.5f) / this.image.Width;
+        var normY = (y + 0.5f) / this.image.Height;
 
-        return NormalizedImageToWorldCoord(pixelX, pixelY);
+        return NormalizedImageToWorldCoord(normX, normY);
     }
 
     private Vector3 NormalizedImageToWorldCoord(float x, float y)
@@ -79,32 +85,16 @@ public class Scene : MonoBehaviour
     private void ComputeWorldImageBounds()
     {
         var aspectRatio = (float)this.image.Width / this.image.Height;
-        var fovLength = Mathf.Tan(this.fov / 2f * Mathf.Deg2Rad) * 2f;
+        var fovLength = Mathf.Tan(this.fieldOfView / 2f * Mathf.Deg2Rad) * 2f;
 
-        switch (this.fovAxis)
-        {
-            case FOVAxisType.Vertical:
-                this._imagePlaneHeight = fovLength;
-                this._imagePlaneWidth = this._imagePlaneHeight * aspectRatio;
-                break;
-            case FOVAxisType.Horizontal:
-                this._imagePlaneWidth = fovLength;
-                this._imagePlaneHeight = this._imagePlaneWidth / aspectRatio;
-                break;
-            default:
-                throw new NotImplementedException();
-        }
+        // Note: We are using vertical FOV here.
+        this._imagePlaneHeight = fovLength;
+        this._imagePlaneWidth = this._imagePlaneHeight * aspectRatio;
     }
 
     private void EmbedImageInWorld()
     {
-        this.image.transform.position = Vector3.forward;
+        this.image.transform.position = new Vector3(0f, 0f, 1f);
         this.image.transform.localScale = new Vector3(this._imagePlaneWidth, this._imagePlaneHeight, 0f);
-    }
-
-    private enum FOVAxisType
-    {
-        Horizontal,
-        Vertical
     }
 }

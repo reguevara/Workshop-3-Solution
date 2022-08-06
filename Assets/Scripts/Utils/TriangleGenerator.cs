@@ -5,11 +5,11 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshCollider))]
-public class GenerateTriangle : MonoBehaviour
+public class TriangleGenerator : MonoBehaviour
 {
-    [SerializeField] private Vector3 v1, v2, v3;
-
-    private void Start()
+    [SerializeField] private Triangle triangle;
+    
+    private void Awake()
     {
         var mesh = CreateMesh();
 
@@ -23,9 +23,9 @@ public class GenerateTriangle : MonoBehaviour
         {
             name = "Triangle"
         };
-
-        mesh.SetVertices(new[] { this.v1, this.v2, this.v3 });
-        mesh.SetIndices(new[] { 0, 1, 2 }, MeshTopology.Triangles, 0);
+        
+        mesh.SetVertices(this.triangle.Vertices());
+        mesh.SetTriangles(new[] { 0, 1, 2 }, 0);
 
         return mesh;
     }

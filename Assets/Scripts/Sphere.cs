@@ -3,24 +3,29 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(SphereCollider))]
 public class Sphere : SceneEntity
 {
+    [SerializeField] private Vector3 center;
+    [SerializeField] private float radius;
+    
     public override RaycastHit? Intersect(Ray ray)
     {
-        //return TestMyIntersect(ray);
+        // Use a custom written intersection function.
+        // Uncomment below once this is done (e.g. from your project):
+        //return MyIntersect(ray);
 
-        // Using Unity engine for ray-sphere collisions instead:
-        var sphere = GetComponent<SphereCollider>();
-        var isHit = sphere.Raycast(ray, out var hit, float.PositiveInfinity);
-        return isHit ? hit : null;
+        // Use Unity engine for collisions.
+        return UnityIntersect(ray);
     }
 
-    private RaycastHit? TestMyIntersect(Ray ray)
+    private RaycastHit? MyIntersect(Ray ray)
     {
         // Check whether ray intersects with sphere.
         // Left as an exercise, but see the plane for an example.
 
         return null;
     }
+    
+    public Vector3 Center => this.center;
+    public float Radius => this.radius;
 }

@@ -3,24 +3,30 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(MeshCollider))]
 public class Triangle : SceneEntity
 {
+    [SerializeField] private Vector3 v1, v2, v3;
+
     public override RaycastHit? Intersect(Ray ray)
     {
-        //return TestMyIntersect(ray);
+        // Use a custom written intersection function.
+        // Uncomment below once this is done (e.g. from your project):
+        //return MyIntersect(ray);
 
-        // Using Unity engine for ray-plane(/mesh) collisions instead:
-        var triangle = GetComponent<MeshCollider>();
-        var isHit = triangle.Raycast(ray, out var hit, float.PositiveInfinity);
-        return isHit ? hit : null;
+        // Use Unity engine for collisions.
+        return UnityIntersect(ray);
     }
 
-    private RaycastHit? TestMyIntersect(Ray ray)
+    private RaycastHit? MyIntersect(Ray ray)
     {
         // Check whether ray intersects with sphere.
         // Left as an exercise, but see the plane for an example.
 
         return null;
+    }
+    
+    public Vector3[] Vertices()
+    {
+        return new[] { this.v1, this.v2, this.v3 };
     }
 }

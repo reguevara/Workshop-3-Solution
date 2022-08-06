@@ -3,13 +3,23 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(MeshRenderer))]
 public abstract class SceneEntity : MonoBehaviour
 {
     public abstract RaycastHit? Intersect(Ray ray);
 
+    protected RaycastHit? UnityIntersect(Ray ray)
+    {
+        // Use the Unity Engine to calculate ray-entity intersection.
+        // The built-in "Collider" component (base class) handles this for us:
+        // - https://docs.unity3d.com/ScriptReference/Collider.html
+        var coll = GetComponentInChildren<Collider>();
+        var isHit = coll.Raycast(ray, out var hit, float.PositiveInfinity);
+        return isHit ? hit : null;
+    }
+    
     public Color Color()
     {
-        return GetComponent<MeshRenderer>().material.color;
+        return GetComponentInChildren<MeshRenderer>()?.material.color 
+               ?? UnityEngine.Color.white; // Default color is white
     }
 }
