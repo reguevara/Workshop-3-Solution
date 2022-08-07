@@ -9,20 +9,10 @@ public class Triangle : SceneEntity
 
     public override RaycastHit? Intersect(Ray ray)
     {
-        // Use a custom written intersection function.
-        // Uncomment below once this is done (e.g. from your project):
-        //return MyIntersect(ray);
-
-        // Use Unity engine for collisions.
-        return UnityIntersect(ray);
-    }
-
-    private RaycastHit? MyIntersect(Ray ray)
-    {
-        // Check whether ray intersects with sphere.
-        // Left as an exercise, but see the plane for an example.
-
-        return null;
+        // By default we use the Unity engine for ray-entity collisions.
+        // See the parent 'SceneEntity' class definition for details.
+        // Task: Replace with your own intersection computations.
+        return base.Intersect(ray);
     }
     
     public Vector3[] Vertices()

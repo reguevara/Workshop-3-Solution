@@ -1,6 +1,7 @@
 // COMP30019 - Graphics and Interaction
 // (c) University of Melbourne, 2022
 
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 public class Scene : MonoBehaviour
@@ -30,7 +31,7 @@ public class Scene : MonoBehaviour
 
     private void DebugVisualisations()
     {
-        // Here you may use Unity "debug rays" to visualise rays in the scene.
+        // Here you may use "debug rays" to visualise rays in the scene.
 
         // Image plane "corner" rays first (frustum edges).
         this.debug.Ray(new Ray(Vector3.zero, NormalizedImageToWorldCoord(0f, 0f)), Color.blue);
@@ -39,19 +40,17 @@ public class Scene : MonoBehaviour
         this.debug.Ray(new Ray(Vector3.zero, NormalizedImageToWorldCoord(1f, 1f)), Color.blue);
         
         // Add more rays to visualise here...
-        this.debug.Ray(new Ray(Vector3.zero, GetPixelCenterWorldCoord(30, 18)), Color.white);
     }
 
     private void Render()
     {
+        // Render the image here...
         for (var y = 0; y < this.image.Height; y++)
         for (var x = 0; x < this.image.Width; x++)
         {
-            var rayOrigin = Vector3.zero;
-            var rayDirection = GetPixelCenterWorldCoord(x, y);
-            var ray = new Ray(rayOrigin, rayDirection);
-
             this.image.SetPixel(x, y, Color.black);
+            
+            var ray = PixelRay(x, y);
             RaycastHit? nearestHit = null;
             foreach (var sceneEntity in FindObjectsOfType<SceneEntity>())
             {
@@ -64,13 +63,15 @@ public class Scene : MonoBehaviour
             }
         }
     }
-
-    private Vector3 GetPixelCenterWorldCoord(int x, int y)
+    
+    private Ray PixelRay(int x, int y)
     {
         var normX = (x + 0.5f) / this.image.Width;
         var normY = (y + 0.5f) / this.image.Height;
 
-        return NormalizedImageToWorldCoord(normX, normY);
+        var worldPixelCoord = NormalizedImageToWorldCoord(normX, normY);
+
+        return new Ray(Vector3.zero, worldPixelCoord);
     }
 
     private Vector3 NormalizedImageToWorldCoord(float x, float y)

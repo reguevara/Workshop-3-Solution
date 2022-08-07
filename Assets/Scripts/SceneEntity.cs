@@ -3,11 +3,9 @@
 
 using UnityEngine;
 
-public abstract class SceneEntity : MonoBehaviour
+public class SceneEntity : MonoBehaviour
 {
-    public abstract RaycastHit? Intersect(Ray ray);
-
-    protected RaycastHit? UnityIntersect(Ray ray)
+    public virtual RaycastHit? Intersect(Ray ray)
     {
         // Use the Unity Engine to calculate ray-entity intersection.
         // The built-in "Collider" component (base class) handles this for us:

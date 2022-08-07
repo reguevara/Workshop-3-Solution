@@ -8,19 +8,14 @@ public class Plane : SceneEntity
     [SerializeField] private Vector3 center;
     [SerializeField] private Vector3 normal;
     
+    public Vector3 Center => this.center;
+    public Vector3 Normal => this.normal;
+    
     public override RaycastHit? Intersect(Ray ray)
     {
-        // Use a custom written intersection function.
-        // Uncomment below once this is done (e.g. from your project):
-        return MyIntersect(ray);
-
-        // Use Unity engine for collisions.
-        //return UnityIntersect(ray);
-    }
-
-    private RaycastHit? MyIntersect(Ray ray)
-    {
-        // Check whether ray intersects with plane
+        // By default we use the Unity engine for ray-entity collisions.
+        // See the parent 'SceneEntity' class definition for details.
+        // Task: Replace with your own intersection computations.
         var denom = Vector3.Dot(ray.direction, normal);
         if (Mathf.Abs(denom) > float.Epsilon)
         {
@@ -37,7 +32,4 @@ public class Plane : SceneEntity
 
         return null;
     }
-    
-    public Vector3 Center => this.center;
-    public Vector3 Normal => this.normal;
 }
