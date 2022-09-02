@@ -16,6 +16,9 @@ public class Plane : SceneEntity
         // By default we use the Unity engine for ray-entity collisions.
         // See the parent 'SceneEntity' class definition for details.
         // Task: Replace with your own intersection computations.
+        
+        // Sample solution below:
+        // (This one is provided, but the others are left as exercises.)
         var denom = Vector3.Dot(ray.direction, normal);
         if (Mathf.Abs(denom) > float.Epsilon)
         {
@@ -25,7 +28,7 @@ public class Plane : SceneEntity
                 var hitPosition = ray.GetPoint(t);
                 return new RaycastHit
                 {
-                    distance = (hitPosition - center).magnitude
+                    distance = (hitPosition - ray.origin).magnitude
                 };
             }
         }
